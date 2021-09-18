@@ -1,6 +1,6 @@
 package entities
 
-type bird struct{
+type Bird struct{
 	ID int
 	Specie string
 	Name string
