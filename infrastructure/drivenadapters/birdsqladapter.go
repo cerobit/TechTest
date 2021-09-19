@@ -65,10 +65,10 @@ func (bda birdSqlDrivenAdapter) Update(b entities.Bird)  error {
 	return  nil
 }
 
-func (bda birdSqlDrivenAdapter) DeleteById(id int) error{
+func (bda birdSqlDrivenAdapter) Delete(bird entities.Bird) error{
 
 	sql := `DELETE  FROM birdinfo.birds b WHERE b.id =$1`
-	_, err := bda.db.Exec(sql,id)
+	_, err := bda.db.Exec(sql,bird.ID)
 	if err != nil {
 		fmt.Println("Error on delete record ", err)
 		return err
@@ -76,21 +76,22 @@ func (bda birdSqlDrivenAdapter) DeleteById(id int) error{
 	return nil
 }
 
-func (bda birdSqlDrivenAdapter) FindById(id int) entities.Bird {
+func (bda birdSqlDrivenAdapter) FindById(id int) (entities.Bird,error) {
+
+	bird := entities.Bird{}
 	sql := `SELECT * FROM birdinfo.birds b WHERE b.id =$1`
 	rows, err := bda.db.Query(sql, id)
 	if err != nil {
-		panic(err)
+		return bird, err
 	}
 	defer rows.Close()
-
 	rows.Next()
-	var bt entities.Bird
-	err = rows.Scan(&bt.ID, &bt.Specie, &bt.Name, &bt.Characteristics)
+
+	err = rows.Scan(&bird.ID, &bird.Specie, &bird.Name, &bird.Characteristics)
 	if err != nil {
-		panic(err)
+		return bird, err
 	}
-	return bt
+	return bird,nil
 }
 
 

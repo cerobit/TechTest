@@ -1,9 +1,9 @@
 package entities
 
-type BirdInterfce interface {
+type BirdGateway interface {
 	Add(Bird) error
 	List() ( []Bird,error )
-	FindById( int ) Bird
+	FindById( int ) (Bird, error )
 	Update(Bird) error
-	DeleteById( int )  error
+	Delete ( Bird )  error
 }
