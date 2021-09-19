@@ -7,6 +7,44 @@ bird feeder
 Install:
 
 
-Postgres Database
+Prepare / Postgres Database and Data for test
 
-docker run  --name postgres-db -p 5432:5432 -e POSTGRES_PASSWORD=onlydemopassword  -d postgres
+* docker run  --name postgres-db -p 5432:5432 -e POSTGRES_PASSWORD=onlydemopassword  -d postgres
+* cat dump_bird_db.sql | docker exec -i postgres-db psql -U postgres
+
+Testing 
+
+Use any web client like Postman or the 2 methods get directly on the browser
+GET http://localhost:8080/api/v1/list
+
+
+###
+
+
+GET http://localhost:8080/api/v1/byid?id=1
+
+
+###
+POST http://localhost:8080/api/v1/add
+Content-Type: application/json
+
+{
+"specie": "Petirrojo Test 2",
+"name": "Petirrojo",
+"characteristics": "Beatiful Bird from north america"
+}
+
+###
+DELETE http://localhost:8080/api/v1/delete/byid?id=23
+
+
+###
+PATCH http://localhost:8080/api/v1/update
+Content-Type: application/json
+
+{
+"id":  100,
+"specie": "PetiAvi- 2  ",
+"name": "PetiAzul",
+"characteristics": "Beaituful bird from north america"
+}

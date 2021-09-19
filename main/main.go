@@ -17,6 +17,7 @@ func init() {
 }
 
 func main() {
+	// Uses the default Handler initialized  on init function
 	http.ListenAndServe(":8080", nil)
 }
 
