@@ -1,8 +1,9 @@
 package entities
 
-type birdInterfce interface {
-	 list() []Bird
-	 findById() (Bird, error)
-	 add() Bird
-	 delete() Bird
+type BirdInterfce interface {
+	Add(Bird) error
+	List() ( []Bird,error )
+	FindById( int ) Bird
+	Update(Bird) error
+	DeleteById( int )  error
 }

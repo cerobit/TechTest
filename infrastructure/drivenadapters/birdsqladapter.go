@@ -1,4 +1,4 @@
-package drivenadapters
+package birdsqladapter
 
 import (
 	"LealTechTest/domain/entities"
@@ -15,39 +15,99 @@ const (
 	dbname   = "birddemo"
 )
 
-var db *sql.DB
-var err error
+type  birdSqlDrivenAdapter struct {
+	 db *sql.DB
 
+}
+
+
+var Dba birdSqlDrivenAdapter
 
 func init() {
+
 	psqlConnInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		host,port,user,password,dbname)
-	db, err = sql.Open("postgres", psqlConnInfo)
+		host, port, user, password, dbname)
+	var err error
+	Dba.db, err = sql.Open("postgres", psqlConnInfo)
 
 	if err != nil {
 		panic(err)
 	}
-	err = db.Ping()
+
+	err = Dba.db.Ping()
 	if err != nil {
 		panic(err)
 	}
 }
 
-func List() []entities.Bird{
+func (bda birdSqlDrivenAdapter) Add(b entities.Bird) error {
 
-    birds := []entities.Bird{}
-	rows, err := db.Query("select  * from birdinfo.birds")
+	sql := ` INSERT INTO birdinfo.birds (specie,name,characteristics) VALUES ($1, $2, $3) `
+	_, err := bda.db.Exec(sql, b.Specie, b.Name, b.Characteristics)
+	if err != nil {
+		fmt.Println("Error on insert of new bird", err)
+		return err
+	}
+	return nil
+}
+
+func (bda birdSqlDrivenAdapter) Update(b entities.Bird)  error {
+
+	sql := `UPDATE birdinfo.birds SET specie = $2 ,name = $3 , characteristics = $4
+		 WHERE id = $1`
+	_, err := Dba.db.Exec(sql,b.ID, b.Specie,b.Name,b.Characteristics )
+
+	if err != nil {
+		panic(err)
+		return err
+	}
+
+	return  nil
+}
+
+func (bda birdSqlDrivenAdapter) DeleteById(id int) error{
+
+	sql := `DELETE  FROM birdinfo.birds b WHERE b.id =$1`
+	_, err := bda.db.Exec(sql,id)
+	if err != nil {
+		fmt.Println("Error on delete record ", err)
+		return err
+	}
+	return nil
+}
+
+func (bda birdSqlDrivenAdapter) FindById(id int) entities.Bird {
+	sql := `SELECT * FROM birdinfo.birds b WHERE b.id =$1`
+	rows, err := bda.db.Query(sql, id)
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+
+	rows.Next()
+	var bt entities.Bird
+	err = rows.Scan(&bt.ID, &bt.Specie, &bt.Name, &bt.Characteristics)
+	if err != nil {
+		panic(err)
+	}
+	return bt
+}
+
+
+func (bda birdSqlDrivenAdapter) List() ( []entities.Bird,  error ) {
+
+	birds := []entities.Bird{}
+	rows, err := bda.db.Query("select  * from birdinfo.birds")
 	if err != nil {
 		fmt.Println("Error can't obtain rows of response with list of birds, ", err)
-		panic(err)
+		return birds,err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
 		var bt entities.Bird
-		 err = rows.Scan(&bt.ID, &bt.Specie, &bt.Name, &bt.Characteristics)
+		err = rows.Scan(&bt.ID, &bt.Specie, &bt.Name, &bt.Characteristics)
 		birds = append(birds, bt)
 	}
-
-	return birds
+	return birds, nil
 }
