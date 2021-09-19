@@ -3,6 +3,7 @@ package birdsqladapter
 import (
 	"LealTechTest/domain/entities"
 	"database/sql"
+	"errors"
 	"fmt"
 	_ "github.com/lib/pq"
 )
@@ -15,9 +16,10 @@ const (
 	dbname   = "birddemo"
 )
 
+// Adapter to Relational Database
+// Must implement BirdGateway Interface
 type  birdSqlDrivenAdapter struct {
 	 db *sql.DB
-
 }
 
 
@@ -68,10 +70,18 @@ func (bda birdSqlDrivenAdapter) Update(b entities.Bird)  error {
 func (bda birdSqlDrivenAdapter) Delete(bird entities.Bird) error{
 
 	sql := `DELETE  FROM birdinfo.birds b WHERE b.id =$1`
-	_, err := bda.db.Exec(sql,bird.ID)
+	res, err := bda.db.Exec(sql,bird.ID)
 	if err != nil {
 		fmt.Println("Error on delete record ", err)
 		return err
+	} else {
+		nRows, err := res.RowsAffected()
+		if err != nil {
+			return err
+		}
+		if nRows ==0 {
+			return errors.New("No deleted record" )
+		}
 	}
 	return nil
 }

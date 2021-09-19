@@ -110,10 +110,11 @@ func (h MainHandler) deleteBird(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			http.Error(w, "Invalid Request Info", http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(string("Error deleting bird"))
+		} else {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
 		}
 
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
 
 	} else {
 		http.Error(w, "Method not Allowed", http.StatusMethodNotAllowed)

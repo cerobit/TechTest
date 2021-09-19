@@ -8,6 +8,7 @@ import (
 
 
 func init() {
+	// DrivenAdapter for Postgres Relational Database, im
 	bGateway := birdsqladapter.Dba
 	//Api Routes registering
 	mainHandler := handlers.MainHandler{}
