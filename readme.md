@@ -4,8 +4,7 @@ As a free test,  i decide to create a project about birds, inspired on our recen
 bird feeder 
 
 
-Install:
-
+Local Install:
 
 Prepare / Postgres Database and Data for test
 
@@ -15,16 +14,21 @@ Prepare / Postgres Database and Data for test
 Testing 
 
 Use any web client like Postman or the 2 methods get directly on the browser
-GET http://localhost:8080/api/v1/list
 
+###
+List of Birds
+
+GET http://localhost:8080/api/v1/list
 
 ###
 
-
+Find One Bird By Id
 GET http://localhost:8080/api/v1/byid?id=1
 
 
 ###
+Add One Bird 
+
 POST http://localhost:8080/api/v1/add
 Content-Type: application/json
 
@@ -33,9 +37,6 @@ Content-Type: application/json
 "name": "Petirrojo",
 "characteristics": "Beatiful Bird from north america"
 }
-
-###
-DELETE http://localhost:8080/api/v1/delete/byid?id=23
 
 
 ###
@@ -48,3 +49,14 @@ Content-Type: application/json
 "name": "PetiAzul",
 "characteristics": "Beaituful bird from north america"
 }
+
+###
+List of Birds 
+
+GET http://localhost:8080/api/v1/list
+
+###
+Delete One Bird by Id
+
+DELETE http://localhost:8080/api/v1/delete/byid?id=23
+###
